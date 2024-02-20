@@ -1,4 +1,4 @@
-project('wllvm-meson', 'c')
+project('gllvm-meson', 'c')
 
 gclang = find_program('gclang', required: false)
 gclang_cpp = find_program('gclang++', required: false)

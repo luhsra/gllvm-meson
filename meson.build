@@ -22,3 +22,5 @@ summary({
   'Use wllvm instead of gllvm': gclang_is_wllvm,
 }, bool_yn: true)
 
+build_tools_env = environment()
+build_tools_env.set('PYTHONPATH', meson.current_source_dir())

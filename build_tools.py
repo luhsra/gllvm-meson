@@ -107,6 +107,10 @@ class Builder:
                                 help='Make executable.',
                                 required=True,
                                 type=Path)
+            parser.add_argument('--make-args',
+                                help='Make arguments',
+                                required=True,
+                                nargs='*')
             parser.add_argument('--jobs',
                                 help='Run Make with that many jobs.',
                                 type=int)

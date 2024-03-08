@@ -32,7 +32,8 @@ class Builder:
                  with_cmake=False,
                  with_make=False,
                  with_gclang=False,
-                 with_target=False):
+                 with_target=False,
+                 in_source_build=False):
         parser = argparse.ArgumentParser(description=self.__doc__)
         parser.add_argument('--build-dir',
                             help='Directory for the building.',
@@ -81,6 +82,12 @@ class Builder:
                                 required=True,
                                 type=Path)
 
+        if in_source_build:
+            parser.add_argument('--meson-build-dir',
+                                help='Directory for the meson build directory',
+                                required=True,
+                                type=Path)
+
         if with_cmake:
             parser.add_argument('--cmake-args',
                                 help='CMake arguments (given as "foo=bar")',
@@ -126,6 +133,10 @@ class Builder:
             else:
                 self.jobs = len(os.sched_getaffinity(0))
 
+        if in_source_build:
+            assert self.args.meson_build_dir.is_dir()
+            self.in_source = True
+
     def _make_new(self, s_dir: Path):
         if s_dir.is_dir():
             shutil.rmtree(s_dir)
@@ -135,8 +146,20 @@ class Builder:
         """Copy all sources to the build directory for in-source builds."""
         if self.args.build_dir.is_dir():
             shutil.rmtree(self.args.build_dir)
-        shutil.copytree(self.args.src_dir, self.args.build_dir,
-                        ignore=lambda *_: ['.git'])
+
+        def ignore(dir, ins):
+            ignores = ['.git']
+            if not self.in_source:
+                return ignores
+
+            for name in ins:
+                if Path(dir, name) == self.args.meson_build_dir:
+                    ignores.append(name)
+                if name == 'subprojects' and Path(dir) == self.args.src_dir:
+                    ignores.append('subprojects')
+            return ignores
+
+        shutil.copytree(self.args.src_dir, self.args.build_dir, ignore=ignore)
 
     def _get_gllvm_env(self):
         env = {**os.environ}

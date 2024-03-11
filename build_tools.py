@@ -109,7 +109,6 @@ class Builder:
                                 type=Path)
             parser.add_argument('--make-args',
                                 help='Make arguments',
-                                required=True,
                                 nargs='*')
             parser.add_argument('--jobs',
                                 help='Run Make with that many jobs.',
@@ -137,6 +136,7 @@ class Builder:
             else:
                 self.jobs = len(os.sched_getaffinity(0))
 
+        self.in_source = False
         if in_source_build:
             assert self.args.meson_build_dir.is_dir()
             self.in_source = True

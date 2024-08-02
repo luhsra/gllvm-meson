@@ -11,7 +11,7 @@ if not gclang.found() or not gclang_cpp.found()
   gclang_is_wllvm = true
   if not gclang.found() or not gclang_cpp.found()
     # note: we need a gllvm version after commit fa0b9ea
-    error('Neither gllvm nor wllvm found. One of them is required. Install gllvm with `go install github.com/SRI-CSL/gllvm/cmd/...@master`')
+    error('Neither gllvm nor wllvm found. One of them is required. Install gllvm with `go install github.com/SRI-CSL/gllvm/cmd/...@master` (and put ~/go/bin/ into your path).')
   endif
 endif
 

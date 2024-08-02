@@ -116,11 +116,15 @@ class Builder:
 
         self.args = parser.parse_args()
 
-        assert self.args.src_dir.is_dir()
-        assert self.args.get_bc_program.is_file()
-        assert self.args.llvm_objcopy_program.is_file()
-        assert self.args.llvm_ld_program.is_file()
-        assert self.args.llvm_bindir.is_dir()
+        def check(arg, what):
+            func = getattr(arg, what)
+            assert func(), f"{arg} not {what}"
+
+        check(self.args.src_dir, "is_dir")
+        check(self.args.get_bc_program, "is_file")
+        check(self.args.llvm_objcopy_program, "is_file")
+        check(self.args.llvm_ld_program, "is_file")
+        check(self.args.llvm_bindir, "is_dir")
 
         if with_cmake:
             assert self.args.cmake_program.is_file()

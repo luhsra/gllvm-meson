@@ -114,6 +114,8 @@ class Builder:
                                 help='Run Make with that many jobs.',
                                 type=int)
 
+        self._add_other_args(parser)
+
         self.args = parser.parse_args()
 
         def check(arg, what):
@@ -144,6 +146,10 @@ class Builder:
         if in_source_build:
             assert self.args.meson_build_dir.is_dir()
             self.in_source = True
+
+    def _add_other_args(self, parser):
+        """Implement this in subclasses to add other arguments"""
+        pass
 
     def _make_new(self, s_dir: Path):
         if s_dir.is_dir():
